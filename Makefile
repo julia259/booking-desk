@@ -1,0 +1,4 @@
+start:
+	node server.mjs
+test:
+	node --test tests/*.test.mjs
