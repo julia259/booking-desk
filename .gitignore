@@ -2,3 +2,5 @@ node_modules/
 runtime/
 .DS_Store
 Thumbs.db
+desktop.ini
+.folder-icon-backup.json

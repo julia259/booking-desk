@@ -1,5 +1,5 @@
 import {parseCSV,assert} from './lib.mjs';
-const esc=s=>String(s).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+const esc=s=>String(s).replace(/\\/g,'\\\\').replace(/\r\n?|\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
 function instant(s){assert(/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?(Z|[+-]\d{2}:\d{2})$/.test(s),'Время: YYYY-MM-DDTHH:mm+02:00 или Z; часовой пояс обязателен'); const t=Date.parse(s);assert(Number.isFinite(t),'Некорректная дата');const day=s.slice(0,10),d=new Date(day+'T00:00:00Z');assert(d.toISOString().slice(0,10)===day,'Несуществующий день');return t;}
 const stamp=t=>new Date(t).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
 // Fold at 75 UTF-8 octets; RFC 5545 continuation starts with a space.

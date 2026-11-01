@@ -10,12 +10,12 @@ export function parseCSVRows(source){
   else if(c===','||c==='\n'||c==='\r'){row.push(cell);cell='';closed=false;if(c!==','){if(c==='\r'&&text[i+1]==='\n')i++;rows.push(row);row=[];assert(rows.length<=10001,'Максимум 10 000 строк');}}
   else {assert(!closed,'Символ после закрывающей кавычки CSV');cell+=c;}
  }
- assert(!quoted,'Незакрытая кавычка CSV');if(cell!==''||row.length||closed){row.push(cell);rows.push(row);}return rows;
+ assert(!quoted,'Незакрытая кавычка CSV');if(cell!==''||row.length||closed){row.push(cell);rows.push(row);}assert(rows.length<=10001,'Максимум 10 000 строк');return rows;
 }
 export function parseCSV(text){
  const rows=parseCSVRows(text);if(!rows.length)return [];
  const headers=rows.shift().map(x=>x.trim());assert(headers.every(Boolean),'Пустое имя столбца CSV');assert(new Set(headers).size===headers.length,'Повтор имени столбца CSV');
- return rows.filter(row=>row.some(c=>c!=='')).map((row,i)=>{assert(row.length===headers.length,`CSV строка ${i+2}: число столбцов отличается`);return Object.fromEntries(headers.map((key,n)=>[key,row[n]]));});
+ return rows.map((row,i)=>{if(!row.some(c=>c!==''))return null;assert(row.length===headers.length,`CSV строка ${i+2}: число столбцов отличается`);return Object.fromEntries(headers.map((key,n)=>[key,row[n]]));}).filter(row=>row!==null);
 }
 export function stringifyCSV(rows,columns){
  const keys=columns??Object.keys(rows[0]??{});const quote=value=>{let text=String(value??'');if(/^[\t\r ]*[=+@-]/.test(text)&&!/^[-+]?\d+(?:\.\d+)?$/.test(text))text="'"+text;return /[",\r\n]/.test(text)?'"'+text.replaceAll('"','""')+'"':text;};
