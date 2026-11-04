@@ -1,0 +1,5 @@
+const CACHE="local-tool-booking-desk-01edd522b7cdf5bd",PREFIX="local-tool-booking-desk-",ASSETS=["/","/index.html","/app.json","/tool.mjs","/app.mjs","/lib.mjs","/style.css","/boot.js","/preferences.mjs","/ui-copy.mjs","/i18n.mjs","/messages.mjs","/drafts.mjs","/pwa.mjs","/icon.svg","/icon-192.png","/icon-512.png","/manifest.webmanifest"];
+self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
+self.addEventListener('message',event=>{if(event.data==='activate')self.skipWaiting();});
+self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith(PREFIX)&&key!==CACHE)await caches.delete(key);await self.clients.claim();})()));
+self.addEventListener('fetch',event=>{const url=new URL(event.request.url);if(event.request.method!=='GET'||url.origin!==self.location.origin||!ASSETS.includes(url.pathname))return;event.respondWith(caches.open(CACHE).then(async cache=>(await cache.match(url.pathname))||fetch(event.request)));});
