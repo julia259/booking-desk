@@ -1,7 +1,7 @@
 export const LANGUAGES = ['ru', 'en', 'es'];
 export const THEMES = ['system', 'light', 'dark'];
 export function detectLanguage(languages = []) {
-  return languages.map(value => String(value).toLowerCase().split('-')[0]).find(value => LANGUAGES.includes(value)) || 'ru';
+  return languages.map(value => String(value).trim().toLowerCase().split(/[-_]/)[0]).find(value => LANGUAGES.includes(value)) || 'en';
 }
 export function preferences(storage, prefix, languages = []) {
   let language, theme;

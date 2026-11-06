@@ -6,7 +6,8 @@ import {saveDraft, readDraft, deleteDraft, storageInfo} from './drafts.mjs';
 import {setupPWA} from './pwa.mjs';
 const $=id=>document.getElementById(id), key='local-tool:'+tool.id+':';
 let storage;try{storage=globalThis.localStorage;}catch{}
-const pref=preferences(storage,key,globalThis.navigator?.languages||[]);
+const nav=globalThis.navigator;
+const pref=preferences(storage,key,nav?.languages?.length?nav.languages:[nav?.language]);
 let lang=pref.language,result=null,urls=[],revision=0,busy=false;
 const t=name=>copy[lang][name];setLanguage(lang);
 const response=await fetch('./app.json');if(!response.ok)throw Error('Application metadata unavailable');const meta=await response.json();
