@@ -1,6 +1,6 @@
 # Booking Desk
 
-<img src="icon.svg" width="88" alt="Booking Desk">
+<img src="src/assets/icon.svg" width="88" alt="Booking Desk">
 
 Reservas por recurso, detección de solapamientos y exportación ICS. Introduce un desfase UTC explícito.
 

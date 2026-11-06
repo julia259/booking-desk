@@ -4,8 +4,10 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=path.dirname(fileURLToPath(import.meta.url));
 const meta=JSON.parse(await readFile(path.join(root,'app.json'),'utf8'));
-const files=new Map(Object.entries({'/':'index.html','/index.html':'index.html','/app.mjs':'app.mjs','/tool.mjs':'tool.mjs','/lib.mjs':'lib.mjs','/style.css':'style.css','/boot.js':'boot.js','/app.json':'app.json','/icon.svg':'icon.svg'}));
-for(const file of ['preferences.mjs','ui-copy.mjs','i18n.mjs','messages.mjs','drafts.mjs','pwa.mjs','sw.js','manifest.webmanifest','icon-192.png','icon-512.png'])files.set('/'+file,file);
+const files=new Map(Object.entries({'/':'index.html','/index.html':'index.html','/src/js/app.mjs':'src/js/app.mjs','/src/js/tool.mjs':'src/js/tool.mjs','/src/js/lib.mjs':'src/js/lib.mjs','/src/css/style.css':'src/css/style.css','/src/js/boot.js':'src/js/boot.js','/app.json':'app.json','/src/assets/icon.svg':'src/assets/icon.svg'}));
+for(const file of ['src/js/preferences.mjs','src/js/ui-copy.mjs','src/js/i18n.mjs','src/js/messages.mjs','src/js/drafts.mjs','src/js/pwa.mjs','sw.js','manifest.webmanifest','src/assets/icon-192.png','src/assets/icon-512.png'])files.set('/'+file,file);
+// Booking Desk adds a schedule editor to the shared shell.
+for(const file of ["src/js/booking-entry.mjs", "src/js/booking-editor.mjs", "src/js/booking-model.mjs", "src/css/booking-editor.css"])files.set('/'+file,file);
 for(const file of meta.vendor??[])files.set('/vendor/'+file,'vendor/'+file);
 export function createServer(){return http.createServer(async(req,res)=>{
  const port=req.socket.localPort;res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
