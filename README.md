@@ -2,47 +2,47 @@
 
 <img src="src/assets/icon.svg" width="88" alt="Booking Desk">
 
-Локальная доска записей с экспортом календаря. Локальный инструмент 0.1.0, JavaScript / Node.js.
+Manage a local appointment board and export a calendar. Local JavaScript / Node.js utility, version 0.1.0.
 
-## Запуск
+## Quick start
 
-Node.js 22+. Windows: Start.cmd. macOS/Linux: sh start.sh. Откройте http://127.0.0.1:8810/. Порт можно задать переменной PORT. Сервер слушает только 127.0.0.1 и отдаёт фиксированный список файлов. Не открывайте index.html напрямую: ES modules требуют HTTP.
+Node.js 22 or newer is required. On Windows, run Start.cmd. On macOS/Linux, run sh start.sh. Open http://127.0.0.1:8810/. Override the port with the PORT environment variable. The server listens only on 127.0.0.1 and serves an explicit file allowlist. Open the HTTP address rather than index.html directly: ES modules require HTTP.
 
-Добавьте записи в редакторе расписания или нажмите «Пример». Для каждой записи укажите ресурс, название, начало и конец с явным UTC-смещением, например `2026-11-06T09:00+01:00`. Нажмите «Обработать» для проверки и экспорта ICS.
+Add entries in the schedule editor or choose Example. Each entry needs a resource, title, start and end with an explicit UTC offset, such as `2026-11-06T09:00+01:00`. Choose Run to validate the schedule and export ICS.
 
-## Редактор расписания — 6 ноября 2026
+## Schedule editor — 2026-11-06
 
-- Добавление и редактирование записей без ручной правки CSV; отмена незавершённой правки.
-- Удаление с подтверждением внутри карточки и отмена последнего добавления, изменения или удаления.
-- Фильтр по дню начала записи в указанном в ней смещении. Это фильтр списка, не недельная календарная сетка. Экспорт всегда включает всё расписание.
-- Подсветка пересечений одного ресурса с учётом UTC. Соседние интервалы разрешены; при пересечении экспорт ICS отклоняется.
-- CSV остаётся доступен. Дополнительные столбцы сохраняются при редактировании. Неправильный CSV блокирует редактор, не заменяя исходный текст. Смена CSV извне сбрасывает текущую правку и историю отмены.
-- Редактор записывает столбец `uid`: изменение названия и времени сохраняет UID календарного события. При первом редактировании старого CSV исходные UID соответствуют прежнему экспортёру. Сохраняйте столбец `uid` при последующей ручной правке; без него идентификатор снова вычисляется по старому правилу (время начала и позиция).
-- RU/EN/ES для редактора. Данные пользователя не переводятся. Сохранение и открытие проекта используют прежние кнопки и IndexedDB; автосохранения нет.
+- Add and edit entries without manually changing CSV; cancel an unfinished edit.
+- Delete with an inline confirmation, and undo the latest addition, edit or deletion.
+- Filter the list by an entry's start date in its stated UTC offset. This is a list filter, not a weekly calendar grid. Exports always include the complete schedule.
+- Highlight overlaps for the same resource using UTC comparisons. Adjacent intervals are allowed; an overlap prevents ICS export.
+- CSV remains available. Edits preserve additional columns. Invalid CSV disables the editor without replacing the source text. Changing CSV outside the editor resets the current edit and undo history.
+- The editor writes a `uid` column so changing a title or time preserves the calendar event UID. The first edit of legacy CSV retains the IDs used by the previous exporter. Keep the `uid` column during later manual edits; without it, IDs are recalculated using the legacy start-time-and-position rule.
+- The editor supports English, Russian and Spanish. User content is not translated. The existing Save project and Open saved project controls use IndexedDB; documents are not autosaved.
 
-Список показывает до 200 записей выбранного дня; обработка и экспорт работают со всем CSV в пределах прежнего лимита 10 000 строк. Несколько именованных проектов и вид недели в эту итерацию не входят.
+The list displays up to 200 entries for the selected day. Processing and export use the entire CSV within the existing 10,000-row limit. Multiple named projects and a weekly view are not included.
 
-Новые модули автономны: `src/js/booking-entry.mjs` запускает общую оболочку и затем редактор; `src/js/booking-model.mjs` содержит проверку времени и идентификаторов. Файлы добавлены в явный список сервера и версионный офлайн-кэш. Если PWA предлагает обновление, сначала сохраните проект, затем нажмите «Обновить приложение».
+The modules are standalone: `src/js/booking-entry.mjs` starts the shared interface and then the editor; `src/js/booking-model.mjs` validates times and identifiers. Both files are included in the server allowlist and versioned offline cache. If the PWA offers an update, save your project before choosing Update application.
 
-## Данные
+## Inputs
 
-- **CSV: resource,start,end,title (время с Z или +02:00)** (textarea).
+- **CSV: resource,start,end,title (times with Z or an offset such as +02:00)** (textarea).
 
-Ввод, вычисления и файлы остаются в браузере. Сохранение полей на этом устройстве — только по кнопке; выбранные файлы не сохраняются. «Удалить сохранённое» удаляет только сохранённые поля этого приложения. Локальное хранение не зашифровано: не используйте общий профиль браузера для чувствительных данных. Результат экспорта проверяйте перед переносом в рабочую систему.
+Input, processing and files stay in the browser. Saving input on this device requires an explicit button action; selected files are not included in that legacy input save. Clear saved data removes only this application's saved input. Local storage is not encrypted: avoid shared browser profiles for sensitive data. Review exported results before using them in a production workflow.
 
-## Границы
+## Scope and limitations
 
-Публичная запись требует сервера, авторизации и конфликтов слотов. Нет сетевой публикации, синхронизации между людьми или автоматических платных запросов. Mac/Linux не проверены на настоящих устройствах.
+Public appointment booking requires a server, authentication and slot-conflict handling. There is no network publishing, shared-user synchronization or automatic paid API access. Native macOS/Linux operation has not been verified on actual devices.
 
-## Проверка
+## Verification
 
 node --test tests/*.test.mjs
 
-Общая оболочка и сервер скопированы из ../product-launchpad/scaffold; после копирования проект автономен и не импортирует соседние приложения. Логика: tool.mjs. Исходные примеры — синтетические.
+The shared interface and server originate from product-launchpad/scaffold. This project is standalone and does not import neighboring applications. Tool logic is in src/js/tool.mjs. Included examples use synthetic data.
 
 ## License
 
-MIT — собственный код; автор Denis Gutsuliak (d9911).
+Original code is licensed under MIT. Author: Denis Gutsuliak (d9911).
 
 ## Interface and local projects — 2026-11-04
 
